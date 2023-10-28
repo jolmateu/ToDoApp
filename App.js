@@ -8,6 +8,8 @@ import {
   FlatList,
 } from 'react-native';
 
+import CheckBox from '@react-native-community/checkbox';
+
 const App = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
@@ -32,10 +34,11 @@ const App = () => {
 
   const renderItem = ({ item, index }) => (
     <View style={[styles.task, item.completed ? styles.completed : null]}>
+      {/* <CheckBox
+        value={item.completed}
+        onValueChange={() => handleToggleTask(index)}
+      /> */}
       <Text style={styles.taskText}>{item.text}</Text>
-      <TouchableOpacity onPress={() => handleToggleTask(index)}>
-        <Text style={styles.checkmark}>{item.completed ? '✔' : ''}</Text>
-      </TouchableOpacity>
       <TouchableOpacity onPress={() => handleRemoveTask(index)}>
         <Text style={styles.remove}>✖</Text>
       </TouchableOpacity>
@@ -69,9 +72,11 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffbe0b',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 30,
+    paddingTop: 50,
   },
   title: {
     fontSize: 24,
@@ -101,15 +106,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   list: {
-    width: '100%',
+    width: '90%',
   },
   task: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomColor: 'black',
+    borderBottomColor: 'goldenrod',
     borderBottomWidth: 2,
     padding: 10,
-    width: '100%',
+    width: '90%',
   },
   taskText: {
     flex: 1,
