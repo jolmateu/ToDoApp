@@ -65,7 +65,7 @@ const App = () => {
     <View style={[styles.task, item.completed ? styles.completed : null]}>
       <Text style={styles.taskText}>{item.text}</Text>
       <TouchableOpacity onPress={() => handleToggleTask(index)}>
-        <Text style={styles.checkmark}>{item.completed ? '✔' : ''}</Text>
+        <Text style={styles.checkmark}>{item.completed ? '✔' : '■'}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleRemoveTask(index)}>
         <Text style={styles.remove}>✖</Text>
@@ -151,11 +151,13 @@ const styles = StyleSheet.create({
   },
   completed: {
     textDecorationLine: 'line-through',
-    opacity: 0.6,
+    opacity: 0.4,
+    textDecorationStyle: 'solid',
   },
   checkmark: {
     fontSize: 18,
     marginRight: 10,
+    color: 'green',
   },
   remove: {
     fontSize: 18,
