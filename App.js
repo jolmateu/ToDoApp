@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,16 +8,43 @@ import {
   FlatList,
 } from 'react-native';
 
-import CheckBox from '@react-native-community/checkbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
 
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  const loadTasks = async () => {
+    try {
+      const jsonTasks = await AsyncStorage.getItem('tasks');
+      if (jsonTasks !== null) {
+        const parsedTasks = JSON.parse(jsonTasks);
+        setTasks(parsedTasks);
+      }
+    } catch (error) {
+      console.error('Error loading Tasks', error);
+    }
+  };
+
+  const saveTasks = async (tasks) => {
+    try {
+      const jsonTasks = JSON.stringify(tasks);
+      await AsyncStorage.setItem('tasks', jsonTasks);
+    } catch (error) {
+      console.error('Error saving New Task:', error);
+    }
+  };
+
   const handleAddTask = () => {
     if (task) {
-      setTasks([...tasks, { text: task, completed: false }]);
+      const newTask = {text:task, completed: false};
+      setTasks([...tasks, newTask]);
       setTask('');
+      saveTasks([...tasks, newTask]);
     }
   };
 
@@ -25,25 +52,27 @@ const App = () => {
     const updatedTasks = [...tasks];
     updatedTasks[index].completed = !updatedTasks[index].completed;
     setTasks(updatedTasks);
+    saveTasks(updatedTasks);
   };
 
   const handleRemoveTask = (index) => {
     const updatedTasks = tasks.filter((_, i) => i !== index);
     setTasks(updatedTasks);
+    saveTasks(updatedTasks);
   };
 
   const renderItem = ({ item, index }) => (
     <View style={[styles.task, item.completed ? styles.completed : null]}>
-      {/* <CheckBox
-        value={item.completed}
-        onValueChange={() => handleToggleTask(index)}
-      /> */}
       <Text style={styles.taskText}>{item.text}</Text>
+      <TouchableOpacity onPress={() => handleToggleTask(index)}>
+        <Text style={styles.checkmark}>{item.completed ? '✔' : ''}</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => handleRemoveTask(index)}>
         <Text style={styles.remove}>✖</Text>
       </TouchableOpacity>
     </View>
   );
+
 
   return (
     <View style={styles.container}>
